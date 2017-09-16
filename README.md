@@ -1,2 +1,2 @@
-# AnkiAdd
-An efficient command line interface to add cards to Anki
+# Tanki
+An efficient command line/terminal interface to add cards to Anki
