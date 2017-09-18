@@ -1,0 +1,25 @@
+
+* TODO *
+
+- Add control characters (and toolbar help) to switch modes
+- Read last mode (we can tell from Anki, no need for config)
+- Add mode for cloze deletions
+- Add more for labeling unlabeled cards
+- Can we sync from command line?
+
+* WISHLIST *
+
+- Command line Google images selection/resizing for
+  mnemonics (ohhh, that would be a killer)
+
+* OLD CODE *
+
+# Word completion
+from prompt_toolkit.contrib.completers import WordCompleter
+completer=WordCompleter(complete) if complete else None # passed to prompt
+
+
+# Setting tags
+tags = uinput('Tags?', example=' '.join(x.tags.all()), complete=x.tags.all())
+n.setTagsFromStr(tags)
+

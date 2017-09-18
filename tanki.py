@@ -5,7 +5,6 @@ import os.path
 from anki import Collection as aopen
 from prompt_toolkit import prompt
 from prompt_toolkit.validation import Validator, ValidationError
-from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.shortcuts import print_tokens
 from prompt_toolkit.styles import style_from_dict
 from pygments.token import Token
@@ -14,9 +13,7 @@ from pprint import pprint
 # Collection directory
 db_path = os.path.expanduser('~/Library/Application Support/Anki2/User 1/collection.anki2')
 
-def usage():
-    print("Usage: {}\n  add cards to Anki".format(sys.argv[0]))
-
+# prompt_toolkit helpers
 class Required(Validator):
     def validate(self, document):
         text = document.text
@@ -28,87 +25,96 @@ style = style_from_dict({
     Token.Toolbar: '#ffffff bg:#333333 italic',
     Token.Saved: '#ff0066',
     Token.Dropped: '#884444',
-    Token.Card: '#2980b9',
+    Token.Title: '#2980b9',
     Token.Hr: '#884444',
 })
 
+# UI elements helpers
 def make_toolbar(txt):
-    return (lambda cli: [(Token.Toolbar, '(e.g. ' + txt + ') or Ctrl-c/d')]) if txt else None
+    exit_msg = 'Ctrl-c/d'
+    if txt:
+        return lambda _: [(Token.Toolbar, '(e.g. ' + txt + ') | ' + exit_msg)]
+    else:
+        return lambda _: [(Token.Toolbar, exit_msg)]
 
-def uinput(txt, required=False, example=None, complete=None):
-    print_tokens([(Token.Label, txt + '\n')], style=style)
-    return prompt('> ', style=style,
+def uinput(text=None, required=False, example=None, uprompt=None):
+    if text:
+        print_tokens([(Token.Label, text + '\n')], style=style)
+    promptl = [(Token.Label, uprompt)] if uprompt else []
+    promptl.append((Token, '> '))
+    return prompt(get_prompt_tokens=lambda _: promptl,
+                  style=style,
                   validator = Required() if required else None,
-                  get_bottom_toolbar_tokens=make_toolbar(example),
-                  completer=WordCompleter(complete) if complete else None)
+                  get_bottom_toolbar_tokens=make_toolbar(example))
 
-def input_card(x):
-    term = uinput('Enter term:', required=True, example='Pigouvian tax')
-    pronun = re.sub(r'^\(|\)$', '', uinput('Pronunciation?', example='pig-oo-vian'))
-    defin = uinput('Definition:', required=True,
-                   example='A tax levied on any market activity with negative externalities')
-    details = uinput('Extra details?', example='Invented by Cambridge economist Arthur Pigou')
-    tags = uinput('Tags?', example=' '.join(x.tags.all()), complete=x.tags.all())
-    return (term, pronun, defin, details, tags)
+def print_hr():
+    print_tokens([(Token.Hr, '---\n')], style=style)
 
-def parenify(x):
-    return "({})".format(x)
+def print_dropped_msg():
+    print_tokens([(Token.Dropped, 'Card dropped!\n\n')], style=style)
+
+# Card I/O helpers
+def input_card():
+    term = uinput(text='Enter question:', required=True, example='What is Pigouvian tax?')
+    defin = uinput(text='Answer:', required=True,
+                   example='A tax on activity with negative externalities')
+    details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
+    return (term, defin, details)
 
 def print_card(card):
-    (term, pronun, defin, details, tags) = card
-    print_tokens([(Token.Card, '\n*** Card ***\n')], style=style)
+    (term, defin, details) = card
+    print_tokens([(Token.Title, '\n*** Card ***\n')], style=style)
     print(term)
-    if pronun:
-        print(parenify(pronun))
-    print('---\n' + defin)
+    print_hr()
+    print(defin)
     if details:
-        print('---\n' + details)
-    if tags:
-        print('---\nTags: ' + tags)
+        print_hr()
+        print(details)
     print()
 
+def savep(card):
+    while True:
+        should = uinput(uprompt='Save card? (Y\\n)')
+        if not should or should == 'Y' or should == 'y':
+            return True
+        elif should == 'N' or should == 'n':
+            print_dropped_msg()
+            return False
+
+# Anki interaction code
 def save_card(card, x):
-    (term, pronun, defin, details, tags) = card
+    (term, defin, details) = card
     if details:
         m = x.models.byName('Basic/reversed+details')
     else:
         m = x.models.byName('Basic (and reversed card)')
     x.decks.current()['mid'] = m['id']
     n = x.newNote()
-    n['Front'] = term + ('<div>{}</div>'.format(parenify(pronun)) if pronun else '')
+    n['Front'] = term
     n['Back'] = defin
     if details:
         n['Details'] = details
-    if tags:
-        n.setTagsFromStr(tags)
     x.addNote(n)
     x.save()
     print_tokens([(Token.Saved, 'Card saved!\n\n')], style=style)
 
-def savep(card):
-    while True:
-        should = prompt(get_prompt_tokens=lambda _: [(Token.Label, 'Save card? (Y\\n)'),
-                                                     (Token, '> ')],
-                       style=style)
-        if not should or should == 'Y' or should == 'y':
-            return True
-        elif should == 'N' or should == 'n':
-            print_tokens([(Token.Dropped, 'Card dropped!\n\n')], style=style)
-            return False
-
+# Main loop...
 def main():
     x = aopen(db_path)
     while True:
         try:
-            card = input_card(x)
+            card = input_card()
             print_card(card)
             if savep(card):
                 save_card(card, x)
         except EOFError:
-            print()
+            print_dropped_msg()
         except KeyboardInterrupt:
             x.close()
             sys.exit()
+
+def usage():
+    print("Usage: {}\n  add cards to Anki".format(sys.argv[0]))
 
 if __name__ != '__main__' or len(sys.argv) > 1:
     usage()
