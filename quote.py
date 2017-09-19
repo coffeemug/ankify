@@ -13,14 +13,22 @@ class Quote:
     def input(self):
         self.quote = uinput(text='Quote:', required=True,
                             example="You can't build [a peaceful world] on [empty stomachs]")
-        self.author = uinput(text='Author:', required=True, example='Norman Borloug')
-        self.source = uinput(text='Source:', required=True, example='Penn Jillette interview')
+        self.author = uinput(text='Author:', example='Norman Borloug')
+        self.source = uinput(text='Source:', example='Penn Jillette interview')
         self.extra = uinput(text='Pronunciation/mnemonics?', example='north man bore log')
 
     def output(self):
         print_accent('\n*** Card ***')
         print(self.quote)
-        print('  - [' + self.author + '] via [' + self.source + ']')
+        attribution = ''
+        if self.author or self.source:
+            attribution += '  -'
+        if self.author:
+            attribution += ' [' + self.author + ']'
+        if self.source:
+            attribution += ' via [' + self.source + ']'
+        if attribution:
+            print(attribution)
         if self.extra:
             print_hr()
             print(self.extra)
@@ -49,9 +57,14 @@ class Quote:
             return '{{c' + str(i) + '::'
         text = re.sub('\\[', rfn, self.quote)
         text = re.sub('\\]', '}}', text)
-        text += '<br><br>'
-        text += '- {{c' + str(i+1) + '::' + self.author + '}}'
-        text += ' via '
-        text += '{{c' + str(i+2) + '::' + self.source + '}}'
+        if self.author or self.source:
+            text += '<br><br>-'
+        if self.author:
+            i+=1
+            text += ' {{c' + str(i) + '::' + self.author + '}}'
+        if self.source:
+            i+=1
+            text += ' via '
+            text += '{{c' + str(i) + '::' + self.source + '}}'
         return text
         
