@@ -9,7 +9,6 @@ class Quote:
         self.source = None
         self.extra = None
 
-
     def input(self):
         self.quote = uinput(text='Quote:', required=True,
                             example="You can't build [a peaceful world] on [empty stomachs]")
