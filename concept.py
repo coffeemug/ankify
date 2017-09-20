@@ -1,21 +1,21 @@
 
 from ui import *
 
-class Term:
+class Concept:
     def __init__(self):
-        self.term = None
+        self.concept = None
         self.defin = None
         self.details = None
     
     def input(self):
-        self.term = uinput(text='Term:', required=True, example='Pigouvian tax')
+        self.concept = uinput(text='Concept:', required=True, example='Pigouvian tax')
         self.defin = uinput(text='Definition:', required=True,
                             example='A tax on activity with negative externalities')
         self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
 
     def output(self):
         print_accent('\n*** Card ***')
-        print(self.term)
+        print(self.concept)
         print_hr()
         print(self.defin)
         if self.details:
@@ -30,7 +30,7 @@ class Term:
             m = x.models.byName('Basic (and reversed card)')
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
-        n['Front'] = self.term
+        n['Front'] = self.concept
         n['Back'] = self.defin
         if self.details:
             n['Details'] = self.details

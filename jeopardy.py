@@ -1,22 +1,22 @@
 
 from ui import *
 
-class Fact:
+class Jeopardy:
     def __init__(self):
-        self.fact = None
-        self.answer = None
+        self.a = None
+        self.q = None
         self.details = None
     
     def input(self):
-        self.fact = uinput(text='Fact:', required=True, example="Leo Tolstoy's year of birth")
-        self.answer = uinput(text='Answer:', required=True, example='1828')
+        self.a = uinput(text='Answer:', required=True, example="Leo Tolstoy's year of birth")
+        self.q = uinput(text='Question:', required=True, example='What is 1828')
         self.details = uinput(text='Pronunciation/mnemonics?', example='tall-stoi')
 
     def output(self):
         print_accent('\n*** Card ***')
-        print(self.fact)
+        print(self.a)
         print_hr()
-        print(self.answer)
+        print(self.q)
         if self.details:
             print_hr()
             print(self.details)
@@ -29,8 +29,8 @@ class Fact:
             m = x.models.byName('Basic')
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
-        n['Front'] = self.fact
-        n['Back'] = self.answer
+        n['Front'] = self.a
+        n['Back'] = self.q
         if self.details:
             n['Details'] = self.details
         x.addNote(n)

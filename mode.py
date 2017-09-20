@@ -1,9 +1,9 @@
 
-from fact import Fact
-from term import Term
+from jeopardy import Jeopardy
+from concept import Concept
 from quote import Quote
 
-card_types = [Fact, Term, Quote]
+card_types = [Jeopardy, Concept, Quote]
 current_mode = 0
 
 def init(x):
