@@ -43,5 +43,5 @@ class Jeopardy:
 
     @staticmethod
     def name():
-        return 'jeopardy ->'
+        return '->'
 

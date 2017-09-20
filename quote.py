@@ -54,7 +54,7 @@ class Quote:
     
     @staticmethod
     def name():
-        return 'quote []'
+        return '[ ]'
 
     def _to_anki(self):
         i = 0

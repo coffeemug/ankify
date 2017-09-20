@@ -38,10 +38,10 @@ def print_hr():
     print_subdued('---')
 
 def make_toolbar(txt, mode):
-    toolbar = ''
+    toolbar = mode.rjust(4)
     if txt:
-        toolbar += '(e.g. ' + txt + ') |'
-    toolbar += ' ' + mode + ' | Ctrl-t/c/d'
+        toolbar += ' | :(' + txt + ')'
+    toolbar += ' | Ctrl-t/c/d'
     return lambda _: [(Token.Toolbar, toolbar)]
 
 # Key bindings for input

@@ -40,7 +40,7 @@ class Concept:
 
     @staticmethod
     def name():
-        return 'concept <->'
+        return '<->'
 
     @staticmethod
     def anki_note_types():
