@@ -41,3 +41,7 @@ class Jeopardy:
     def anki_note_types():
         return ['Basic', 'Basic+details']
 
+    @staticmethod
+    def name():
+        return 'jeopardy ->'
+

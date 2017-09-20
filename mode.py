@@ -20,7 +20,7 @@ def toggle():
         current_mode = 0
 
 def current():
-    return card_types[current_mode].__name__.lower()
+    return card_types[current_mode].name()
 
 def card():
     return card_types[current_mode]()

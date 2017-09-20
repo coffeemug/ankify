@@ -52,6 +52,10 @@ class Quote:
     def anki_note_types():
         return ['Cloze', 'Cloze+details']
     
+    @staticmethod
+    def name():
+        return 'quote'
+
     def _to_anki(self):
         i = 0
         def rfn(m):

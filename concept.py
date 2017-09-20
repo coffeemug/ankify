@@ -39,6 +39,10 @@ class Concept:
         print_loud('Card saved!', nl=2)
 
     @staticmethod
+    def name():
+        return 'concept <->'
+
+    @staticmethod
     def anki_note_types():
         return ['Basic (and reversed card)', 'Basic/reversed+details']
 
