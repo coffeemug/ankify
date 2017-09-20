@@ -1,44 +1,20 @@
 
-import ui
-from ui import *
 import sys
 import os.path
 from anki import Collection as aopen
-from jeopardy import Jeopardy
-from quote import Quote
+import mode
+from ui import *
 
 # Collection directory
 db_path = os.path.expanduser('~/Library/Application Support/Anki2/User 1/collection.anki2')
 
-# Mode management
-def on_toggle(e):
-    if ui.mode == 'quote':
-        ui.mode = 'jeopardy'
-    else:
-        ui.mode = 'quote'
-    e.cli.exit()
-set_on_toggle(on_toggle)
-
-# Card I/O helpers
-def init_mode(x):
-    if x.models.current()['name'] == 'Cloze' or x.models.current()['name'] == 'Cloze+details':
-        ui.mode = 'quote'
-    else:
-        ui.mode = 'jeopardy'
-
-def make_card():
-    if ui.mode == 'jeopardy':
-        return Jeopardy()
-    else:
-        return Quote()
-
 # Main loop...
 def main():
     x = aopen(db_path)
-    init_mode(x)
+    mode.init(x)
     while True:
         try:
-            card = make_card()
+            card = mode.card()
             card.input()
             card.output()
             if yes_no_p('Save card?'):

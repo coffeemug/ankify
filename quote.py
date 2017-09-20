@@ -41,14 +41,18 @@ class Quote:
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
         i = 0
-        n['Text'] = self.to_anki()
+        n['Text'] = self._to_anki()
         if self.extra:
             n['Extra'] = self.extra
         x.addNote(n)
         x.save()
         print_loud('Card saved!', nl=2)
 
-    def to_anki(self):
+    @staticmethod
+    def anki_note_types():
+        return ['Cloze', 'Cloze+details']
+    
+    def _to_anki(self):
         i = 0
         def rfn(m):
             nonlocal i

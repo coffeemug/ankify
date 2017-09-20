@@ -1,16 +1,16 @@
 
 from ui import *
 
-class Jeopardy:
+class Term:
     def __init__(self):
         self.term = None
         self.defin = None
         self.details = None
     
     def input(self):
-        self.defin = uinput(text='Answer:', required=True,
+        self.term = uinput(text='Term:', required=True, example='Pigouvian tax')
+        self.defin = uinput(text='Definition:', required=True,
                             example='A tax on activity with negative externalities')
-        self.term = uinput(text='Question:', required=True, example='What is Pigouvian tax?')
         self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
 
     def output(self):
@@ -37,4 +37,8 @@ class Jeopardy:
         x.addNote(n)
         x.save()
         print_loud('Card saved!', nl=2)
+
+    @staticmethod
+    def anki_note_types():
+        return ['Basic (and reversed card)', 'Basic/reversed+details']
 

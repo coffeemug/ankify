@@ -6,9 +6,7 @@ from prompt_toolkit.shortcuts import print_tokens
 from prompt_toolkit.styles import style_from_dict
 from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit import prompt
-
-# UI mode
-mode = 'jeopardy'
+import mode
 
 # Validation
 class Required(Validator):
@@ -47,16 +45,11 @@ def make_toolbar(txt, mode):
     return lambda _: [(Token.Toolbar, toolbar)]
 
 # Key bindings for input
-def on_toggle(_):
-    pass
-def set_on_toggle(fn):
-    global on_toggle
-    on_toggle = fn
-
 manager = KeyBindingManager.for_prompt()
 @manager.registry.add_binding(Keys.ControlT)
-def _(event):
-    on_toggle(event)
+def _(e):
+    mode.toggle()
+    e.cli.exit()
 
 # input elements
 def uinput(text=None, required=False, example=None, uprompt=None):
@@ -67,7 +60,7 @@ def uinput(text=None, required=False, example=None, uprompt=None):
     return prompt(get_prompt_tokens=lambda _: promptl,
                   style=style,
                   validator = Required() if required else None,
-                  get_bottom_toolbar_tokens=make_toolbar(example, mode),
+                  get_bottom_toolbar_tokens=make_toolbar(example, mode.current()),
                   key_bindings_registry=manager.registry)
 
 def yes_no_p(q):
