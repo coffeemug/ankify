@@ -14,9 +14,8 @@ def synchronize():
     (client, server, hkey) = connect(x)
     ret = attempt_incremental_sync(client)
     if ret == 'fullSync':
-        perform_full_sync()
-    else:
-        print(ret)
+        ret = perform_full_sync(x, server, hkey)
+    print(ret)
     perform_media_sync(x, server, hkey)
 
 ###
@@ -46,11 +45,25 @@ def attempt_incremental_sync(client):
     print('Attempting incremental sync...', end=' ', flush=True)
     return client.sync()
 
-def perform_full_sync():
-    # TODO: implement
-    # We'll need a user decision (up or down)
-    print("Full sync required, but not implemented")
-    raise EOFError()
+def perform_full_sync(x, server, hkey):
+    dir = ui.up_down()
+    client = sync.FullSyncer(x, hkey, server.client)
+    try:
+        if dir == "u":
+            print('Full upload...', end=' ', flush=True)
+            if client.upload():
+                ret = 'success'
+            else:
+                ret = 'err'
+        else:
+            print('Full download...', end=' ', flush=True)
+            client.download()
+            ret = 'success'
+    except Exception as e:
+        print(str(e))
+        raise
+    x.reopen()
+    return ret
 
 def perform_media_sync(x, server, hkey):
     print('Performing media sync...', end=' ', flush=True)

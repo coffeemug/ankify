@@ -77,3 +77,11 @@ def yes_no_p(q):
         elif should == 'N' or should == 'n':
             return False
 
+def up_down():
+    while True:
+        dir = uinput(uprompt='Overwrite dir (U\\D)')
+        if dir == 'U':
+            return 'u'
+        elif dir == 'D':
+            return 'd'
+
