@@ -5,10 +5,10 @@ An efficient command line/terminal interface to add cards to Anki
 
 # Usage
 
-- Ctrl-t - toggle mode (`->` is a one way card, `<->` two way card, `[ ]` cloze deletion)
-- Ctrl-d - drop the current card and start from scratch
-- Ctrl-u - sync with the server
-- Ctrl-c - quit
+- `Ctrl-t` - toggle mode (`->` is a one way card, `<->` two way card, `[ ]` cloze deletion)
+- `Ctrl-d` - drop the current card and start from scratch
+- `Ctrl-u` - sync with the server
+- `Ctrl-c` - quit
 
 # Caveat
 
