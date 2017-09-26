@@ -1,11 +1,16 @@
 
-from anki import Collection as aopen
-from anki import sync
 import ui
 import os
 import sys
+import config
+from anki import Collection as aopen
+from anki import sync
 
-def synchronize(x):
+def init(_x):
+    global x
+    x = _x
+
+def synchronize():
     (client, server, hkey) = connect(x)
     ret = attempt_incremental_sync(client)
     if ret == 'fullSync':
@@ -14,24 +19,32 @@ def synchronize(x):
         print(ret)
     perform_media_sync(x, server, hkey)
 
-def attempt_incremental_sync(client):
-    print('Attempting incremental sync...')
-    return client.sync()
+###
 
 def connect(x):
-    # TODO: implement hkey storage
-    hkey = None
+    hkey = config.hkey()
     server = sync.RemoteServer(hkey)
-    if not hkey:
-        username = ui.uinput(uprompt='Username', required=True)
-        password = ui.uinput(uprompt='Password', required=True)
-        print('Authenticating...')
-        hkey = server.hostKey(username, password)
-    if not hkey:
-        print( "Bad auth")
-        raise EOFError()
+    hkey = authenticate(hkey, server)
     client = sync.Syncer(x, server)
     return (client, server, hkey)
+
+def authenticate(hkey, server):
+    if not hkey:
+        username = ui.uinput(uprompt='Username', required=True)
+        password = ui.uinput(uprompt='Password', required=True, password=True)
+        print('Authenticating...', end=' ', flush=True)
+        hkey = server.hostKey(username, password)
+        if not hkey:
+            print( "bad auth")
+            raise EOFError()
+        else:
+            print("success")
+            config.save_hkey(hkey)
+    return hkey
+
+def attempt_incremental_sync(client):
+    print('Attempting incremental sync...', end=' ', flush=True)
+    return client.sync()
 
 def perform_full_sync():
     # TODO: implement
@@ -40,7 +53,7 @@ def perform_full_sync():
     raise EOFError()
 
 def perform_media_sync(x, server, hkey):
-    print('Performing media sync...')
+    print('Performing media sync...', end=' ', flush=True)
     server = sync.RemoteMediaServer(x, hkey, server.client)
     client = sync.MediaSyncer(x, server)
     try:
@@ -49,8 +62,3 @@ def perform_media_sync(x, server, hkey):
         ret = str(e)
     print(ret)
 
-if __name__ == '__main__':
-    # TODO: remove this; hook up to main
-    db_path = os.path.expanduser('~/Library/Application Support/Anki2/User 1/collection.anki2')
-    x = aopen(db_path)
-    synchronize(x)

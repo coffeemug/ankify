@@ -1,16 +1,15 @@
 
 import sys
 import os.path
-from anki import Collection as aopen
 import mode
 from ui import *
-
-# Collection directory
-db_path = os.path.expanduser('~/Library/Application Support/Anki2/User 1/collection.anki2')
+import config
+from anki import Collection as aopen
 
 # Main loop...
 def main():
-    x = aopen(db_path)
+    config.init()
+    x = aopen(config.db_path())
     mode.init(x)
     while True:
         try:

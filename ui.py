@@ -41,18 +41,23 @@ def make_toolbar(txt, mode):
     toolbar = mode.rjust(4)
     if txt:
         toolbar += ' | :(' + txt + ')'
-    toolbar += ' | Ctrl-t/c/d'
+    toolbar += ' | Ctrl-t/c/d/u'
     return lambda _: [(Token.Toolbar, toolbar)]
 
 # Key bindings for input
 manager = KeyBindingManager.for_prompt()
 @manager.registry.add_binding(Keys.ControlT)
-def _(e):
+def _t(e):
     mode.toggle()
     e.cli.exit()
 
+@manager.registry.add_binding(Keys.ControlU)
+def _u(e):
+    e.cli.exit()
+    mode.sync()
+
 # input elements
-def uinput(text=None, required=False, example=None, uprompt=None):
+def uinput(text=None, required=False, example=None, uprompt=None, password=False):
     if text:
         print_tokens([(Token.Label, text + '\n')], style=style)
     promptl = [(Token.Label, uprompt)] if uprompt else []
@@ -61,7 +66,8 @@ def uinput(text=None, required=False, example=None, uprompt=None):
                   style=style,
                   validator = Required() if required else None,
                   get_bottom_toolbar_tokens=make_toolbar(example, mode.current()),
-                  key_bindings_registry=manager.registry)
+                  key_bindings_registry=manager.registry,
+                  is_password=password)
 
 def yes_no_p(q):
     while True:
