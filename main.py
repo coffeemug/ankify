@@ -21,7 +21,7 @@ def main():
             else:
                 print_subdued('Card dropped!', nl=2)
         except EOFError:
-            print_subdued('Card dropped', nl=2)
+            print()
         except KeyboardInterrupt:
             x.close()
             sys.exit()
