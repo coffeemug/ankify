@@ -13,7 +13,7 @@ An efficient command line/terminal interface to add cards to Anki
 # Caveat
 
 Currently the program depends on note types that don't exist in Anki
-proper (I cloned some in Anki to have a nicer layour). You can reverse
+proper (I cloned some in Anki to have a nicer layout). You can reverse
 engineer the fields from the code (see `concept.py`, `jeopardy.py`,
 and `quote.py`).
 
