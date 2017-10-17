@@ -83,7 +83,7 @@ def img_to_term(img):
     sys.stdout.write(txt)
 
 def test():
-    sources = search('man')
+    sources = search('woman')
     images = download_all(sources)
     images = to_images(images)
     images = filterify(images)

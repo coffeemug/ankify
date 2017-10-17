@@ -3,7 +3,7 @@ import sys
 import os.path
 import configparser
 
-conf_path = os.path.expanduser('~/tanki.ini')
+conf_path = os.path.expanduser('~/ankify.ini')
 conf = None
 
 def init():
