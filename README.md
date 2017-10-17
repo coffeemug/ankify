@@ -1,7 +1,7 @@
-# Tanki
+# Ankify
 An efficient command line/terminal interface to add cards to Anki
 
-![Screencast](https://raw.githubusercontent.com/coffeemug/tanki/master/cast.gif "Screencast")
+![Screencast](https://raw.githubusercontent.com/coffeemug/ankify/master/cast.gif "Screencast")
 
 # Usage
 
