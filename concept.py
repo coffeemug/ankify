@@ -10,10 +10,10 @@ class Concept:
     
     def input(self):
         self.concept = uinput(text='Concept:', required=True, example='Pigouvian tax')
-        if ui.is_h:
-            self.concept = "<b>[concept handle]</b> " + self.concept
         self.desc = uinput(text='Description:', required=True,
                             example='A tax on negative externalities')
+        if ui.is_h:
+            self.desc = "<b>[concept handle]</b> " + self.desc
         self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
 
     def output(self):
