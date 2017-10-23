@@ -8,6 +8,10 @@ from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit import prompt
 import mode
 
+# TODO: this is for "concept handle" mode, and really should be local
+# to the Concept mode, but I'm too lazy to deal with the refactor now.
+is_h = True
+
 # Validation
 class Required(Validator):
     def validate(self, document):
@@ -42,6 +46,8 @@ def make_toolbar(txt, mode):
     if txt:
         toolbar += ' | :(' + txt + ')'
     toolbar += ' | Ctrl-t/c/d/u'
+    if mode == '<->' or mode == '<h>':
+        toolbar += '/h'
     return lambda _: [(Token.Toolbar, toolbar)]
 
 # Key bindings for input
@@ -55,6 +61,14 @@ def _t(e):
 def _u(e):
     e.cli.exit()
     mode.sync()
+
+# TODO: cards should really contribute their own additional bindings,
+# but I'm too lazy to refactor this right now.
+@manager.registry.add_binding(Keys.ControlH)
+def _h(e):
+    global is_h
+    is_h = not is_h
+    e.cli.exit()
 
 # input elements
 def uinput(text=None, required=False, example=None, uprompt=None, password=False):

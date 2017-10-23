@@ -1,4 +1,5 @@
 
+import ui
 from ui import *
 
 class Concept:
@@ -9,6 +10,8 @@ class Concept:
     
     def input(self):
         self.concept = uinput(text='Concept:', required=True, example='Pigouvian tax')
+        if ui.is_h:
+            self.concept = "<b>[concept handle]</b> " + self.concept
         self.desc = uinput(text='Description:', required=True,
                             example='A tax on negative externalities')
         self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
@@ -40,7 +43,10 @@ class Concept:
 
     @staticmethod
     def name():
-        return '<->'
+        if ui.is_h:
+            return '<h>'
+        else:
+            return '<->'
 
     @staticmethod
     def anki_note_types():

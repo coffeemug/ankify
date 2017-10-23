@@ -23,7 +23,6 @@ def db_path():
 def hkey():
     return load()['settings'].get('hkey')
 
-
 def save_hkey(val):
     load()['settings']['hkey'] = val
     save()
