@@ -82,8 +82,8 @@ def img_to_term(img):
     txt = IMAGE_CODE.format(**data)
     sys.stdout.write(txt)
 
-def test():
-    sources = search('woman')
+def test(word):
+    sources = search(word)
     images = download_all(sources)
     images = to_images(images)
     images = filterify(images)
@@ -93,4 +93,6 @@ def test():
     img_to_term(out)
     print()
 
-test()
+print("Type an image query and hit enter")
+while True:
+    test(sys.stdin.readline())
