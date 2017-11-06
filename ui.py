@@ -1,36 +1,25 @@
 
 from prompt_toolkit.key_binding.manager import KeyBindingManager
-from prompt_toolkit.keys import Keys
 from pygments.token import Token
 from prompt_toolkit.shortcuts import print_tokens
 from prompt_toolkit.styles import style_from_dict
 from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit import prompt
-import mode
 
-# TODO: this is for "concept handle" mode, and really should be local
-# to the Concept mode, but I'm too lazy to deal with the refactor now.
-is_h = True
+# what mode are we in (for the toolbar)
+mode_name = ""
+key_bindings = {}
 
-# Key bindings for input
+# key bindings interface
 manager = KeyBindingManager.for_prompt()
-@manager.registry.add_binding(Keys.ControlT)
-def _t(e):
-    mode.toggle()
-    e.cli.exit()
 
-@manager.registry.add_binding(Keys.ControlU)
-def _u(e):
-    e.cli.exit()
-    mode.sync()
+def add_key(key, callback):
+    key_bindings[callback] = key
+    manager.registry.add_binding(key)(callback)
 
-# TODO: cards should really contribute their own additional bindings,
-# but I'm too lazy to refactor this right now.
-@manager.registry.add_binding(Keys.ControlH)
-def _h(e):
-    global is_h
-    is_h = not is_h
-    e.cli.exit()
+def drop_key(callback):
+    key_bindings.pop(callback, None)
+    manager.registry.remove_binding(callback)
 
 # uinput is kinda big
 def uinput(text=None, required=False, example=None, uprompt=None, password=False):
@@ -41,7 +30,7 @@ def uinput(text=None, required=False, example=None, uprompt=None, password=False
     return prompt(get_prompt_tokens=lambda _: promptl,
                   style=style,
                   validator = Required() if required else None,
-                  get_bottom_toolbar_tokens=make_toolbar(example, mode.name()),
+                  get_bottom_toolbar_tokens=make_toolbar(example, mode_name),
                   key_bindings_registry=manager.registry,
                   is_password=password)
 
@@ -55,10 +44,15 @@ def make_toolbar(txt, mode):
     toolbar = mode.rjust(4)
     if txt:
         toolbar += ' | :(' + txt + ')'
-    toolbar += ' | Ctrl-t/c/d/u'
-    if mode == '<->' or mode == '<h>':
-        toolbar += '/h'
+    toolbar += ' | Ctrl-d/c/' + format_bindings()
     return lambda _: [(Token.Toolbar, toolbar)]
+
+def format_bindings():
+    keys = []
+    for key in key_bindings.values():
+        name = key.name.replace("<", "").replace(">", "")
+        keys.append(name[-1])
+    return "/".join(keys).lower()
 
 # other input elements
 def yes_no_p(q):

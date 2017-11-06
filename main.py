@@ -13,7 +13,7 @@ def main():
     mode.init(x)
     while True:
         try:
-            card = mode.card()
+            card = mode.make_card()
             card.input()
             card.output()
             if yes_no_p('Save card?'):
