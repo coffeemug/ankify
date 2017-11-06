@@ -12,44 +12,6 @@ import mode
 # to the Concept mode, but I'm too lazy to deal with the refactor now.
 is_h = True
 
-# Validation
-class Required(Validator):
-    def validate(self, document):
-        text = document.text
-        if not text:
-            raise ValidationError(message='Required', cursor_position=0)
-
-# Styles
-style = style_from_dict({
-    Token.Label: '#44ff44 italic',
-    Token.Toolbar: '#ffffff bg:#333333 italic',
-    Token.Subdued: '#884444',
-    Token.Accent: '#2980b9',
-    Token.Loud: '#ff0066',
-})
-
-# UI elements helpers
-def print_subdued(txt, nl=1):
-    print_tokens([(Token.Subdued, txt + ('\n' * nl))], style=style)
-    
-def print_accent(txt, nl=1):
-    print_tokens([(Token.Accent, txt + ('\n' * nl))], style=style)
-    
-def print_loud(txt, nl=1):
-    print_tokens([(Token.Loud, txt + ('\n' * nl))], style=style)
-    
-def print_hr():
-    print_subdued('---')
-
-def make_toolbar(txt, mode):
-    toolbar = mode.rjust(4)
-    if txt:
-        toolbar += ' | :(' + txt + ')'
-    toolbar += ' | Ctrl-t/c/d/u'
-    if mode == '<->' or mode == '<h>':
-        toolbar += '/h'
-    return lambda _: [(Token.Toolbar, toolbar)]
-
 # Key bindings for input
 manager = KeyBindingManager.for_prompt()
 @manager.registry.add_binding(Keys.ControlT)
@@ -70,7 +32,7 @@ def _h(e):
     is_h = not is_h
     e.cli.exit()
 
-# input elements
+# uinput is kinda big
 def uinput(text=None, required=False, example=None, uprompt=None, password=False):
     if text:
         print_tokens([(Token.Label, text + '\n')], style=style)
@@ -79,10 +41,26 @@ def uinput(text=None, required=False, example=None, uprompt=None, password=False
     return prompt(get_prompt_tokens=lambda _: promptl,
                   style=style,
                   validator = Required() if required else None,
-                  get_bottom_toolbar_tokens=make_toolbar(example, mode.current()),
+                  get_bottom_toolbar_tokens=make_toolbar(example, mode.name()),
                   key_bindings_registry=manager.registry,
                   is_password=password)
 
+class Required(Validator):
+    def validate(self, document):
+        text = document.text
+        if not text:
+            raise ValidationError(message='Required', cursor_position=0)
+
+def make_toolbar(txt, mode):
+    toolbar = mode.rjust(4)
+    if txt:
+        toolbar += ' | :(' + txt + ')'
+    toolbar += ' | Ctrl-t/c/d/u'
+    if mode == '<->' or mode == '<h>':
+        toolbar += '/h'
+    return lambda _: [(Token.Toolbar, toolbar)]
+
+# other input elements
 def yes_no_p(q):
     while True:
         should = uinput(uprompt=q+' (Y\\n)')
@@ -98,4 +76,26 @@ def up_down():
             return 'u'
         elif dir == 'D':
             return 'd'
+
+# UI elements helpers
+def print_subdued(txt, nl=1):
+    print_tokens([(Token.Subdued, txt + ('\n' * nl))], style=style)
+    
+def print_accent(txt, nl=1):
+    print_tokens([(Token.Accent, txt + ('\n' * nl))], style=style)
+    
+def print_loud(txt, nl=1):
+    print_tokens([(Token.Loud, txt + ('\n' * nl))], style=style)
+    
+def print_hr():
+    print_subdued('---')
+
+# Styles
+style = style_from_dict({
+    Token.Label: '#44ff44 italic',
+    Token.Toolbar: '#ffffff bg:#333333 italic',
+    Token.Subdued: '#884444',
+    Token.Accent: '#2980b9',
+    Token.Loud: '#ff0066',
+})
 

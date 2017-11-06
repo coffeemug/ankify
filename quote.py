@@ -39,12 +39,7 @@ class Quote:
         x.save()
         print_loud('Card saved!', nl=2)
 
-    @staticmethod
-    def anki_note_types():
-        return ['Cloze', 'Cloze+details']
-    
-    @staticmethod
-    def name():
+    def name(self):
         return '[ ]'
 
     def _to_anki(self):

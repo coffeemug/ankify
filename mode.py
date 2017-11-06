@@ -4,31 +4,31 @@ from concept import Concept
 from quote import Quote
 import sync as s
 
-card_types = [Jeopardy, Concept, Quote]
+card_types = [Concept, Jeopardy, Quote]
 current_mode = 0
+current_card = None
 syncing = False
 
 def init(x):
     s.init(x)
-    anki_current = x.models.current()['name']
-    for idx, card_type in enumerate(card_types):
-        if anki_current in card_type.anki_note_types():
-            current_mode = idx
-            return
 
 def toggle():
-    global current_mode
+    global current_mode, current_card
     current_mode += 1
+    current_card = None
     if current_mode >= len(card_types):
         current_mode = 0
 
-def current():
+def name():
     if syncing:
         return 'syn'
-    return card_types[current_mode].name()
+    return card().name()
 
 def card():
-    return card_types[current_mode]()
+    global current_card
+    if not current_card:
+        current_card = card_types[current_mode]()
+    return current_card
 
 def sync():
     global syncing

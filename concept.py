@@ -41,14 +41,9 @@ class Concept:
         x.save()
         print_loud('Card saved!', nl=2)
 
-    @staticmethod
-    def name():
+    def name(self):
         if ui.is_h:
             return '<h>'
         else:
             return '<->'
-
-    @staticmethod
-    def anki_note_types():
-        return ['Basic (and reversed card)', 'Basic/reversed+details']
 

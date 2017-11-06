@@ -37,11 +37,6 @@ class Jeopardy:
         x.save()
         print_loud('Card saved!', nl=2)
 
-    @staticmethod
-    def anki_note_types():
-        return ['Basic', 'Basic+details']
-
-    @staticmethod
-    def name():
+    def name(self):
         return '->'
 
