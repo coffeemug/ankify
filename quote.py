@@ -12,7 +12,8 @@ class Quote:
         self.quote = uinput(text='Quote:', required=True,
                             example="Life is [suffering]")
         self.source = uinput(text='Source:', example='[Buddha] via [Pali Canon]')
-        self.extra = uinput(text='Pronunciation/mnemonics?', example='pah-lee')
+        self.extra = uinput(text='Pronunciation/mnemonics?', example='pah-lee',
+                            allow_images=True)
 
     def output(self):
         print_accent('\n*** Card ***')

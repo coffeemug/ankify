@@ -7,8 +7,14 @@ is_concept_handle = True
 def toggle_concept_handle(e):
     global is_concept_handle
     is_concept_handle = not is_concept_handle
-    e.cli.exit()
+    ui.mode_name = fmt_card_mode()
 
+def fmt_card_mode():
+    if is_concept_handle:
+        return '<h>'
+    else:
+        return '<->'
+    
 class Concept:
     def __init__(self):
         self.concept = None
@@ -23,9 +29,10 @@ class Concept:
         self.concept = uinput(text='Concept:', required=True, example='Pigouvian tax')
         self.desc = uinput(text='Description:', required=True,
                             example='A tax on negative externalities')
+        self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian',
+                              allow_images=True)
         if is_concept_handle:
             self.desc = "<b>[concept handle]</b> " + self.desc
-        self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian')
 
     def output(self):
         print_accent('\n*** Card ***')
@@ -53,8 +60,4 @@ class Concept:
         print_loud('Card saved!', nl=2)
 
     def name(self):
-        if is_concept_handle:
-            return '<h>'
-        else:
-            return '<->'
-
+        return fmt_card_mode()

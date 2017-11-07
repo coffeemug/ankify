@@ -82,17 +82,16 @@ def img_to_term(img):
     txt = IMAGE_CODE.format(**data)
     sys.stdout.write(txt)
 
-def test(word):
-    sources = search(word)
+def query_images(query):
+    sources = search(query)
     images = download_all(sources)
     images = to_images(images)
     images = filterify(images)
     images = beautify(images)
-    images = images[:8]
+    return images[:8]
+
+def grid_print(images):
     out = gridify(images)
     img_to_term(out)
     print()
 
-print("Type an image query and hit enter")
-while True:
-    test(sys.stdin.readline())

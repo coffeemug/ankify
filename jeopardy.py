@@ -10,7 +10,8 @@ class Jeopardy:
     def input(self):
         self.desc = uinput(text='Description:', required=True, example="Tolstoy's year of birth")
         self.fact = uinput(text='Fact:', required=True, example='1828')
-        self.details = uinput(text='Pronunciation/mnemonics?', example='tall-stoi')
+        self.details = uinput(text='Pronunciation/mnemonics?', example='tall-stoi',
+                              allow_images=True)
 
     def output(self):
         print_accent('\n*** Card ***')
