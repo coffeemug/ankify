@@ -103,9 +103,11 @@ def make_on_image_search(text_fn, example):
         if _i != '':
             return
         drop_key(on_image_search)
-        e.cli.run_in_terminal(_find_images)
-        e.cli.run_in_terminal(text_fn)
-        add_key(Keys.ControlI, on_image_search)
+        try:
+            e.cli.run_in_terminal(_find_images)
+            e.cli.run_in_terminal(text_fn)
+        finally:
+            add_key(Keys.ControlI, on_image_search)
         
     return _on_image_search
 
