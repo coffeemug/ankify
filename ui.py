@@ -8,12 +8,14 @@ from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit import prompt
 from prompt_toolkit.keys import Keys
 from getch import getch
+import tempfile
+import urllib
 import images
 
 # what mode are we in (for the toolbar)
 mode_name = ""
 key_bindings = {}
-staged_images = {}
+staged_images = []
 on_image_search = None
 
 # key bindings interface
@@ -50,6 +52,7 @@ def uinput(text=None, required=False, example=None, uprompt=None, password=False
     finally:
         if allow_images:
             drop_key(on_image_search)
+            on_image_search = None
     return res
 
 class Required(Validator):
@@ -77,6 +80,16 @@ def format_bindings():
     return "/".join(keys).lower()
 
 # image search
+def save_staged_images_and_htmlify(x):
+    html = ''
+    for i in staged_images:
+        with tempfile.TemporaryFile() as fp:
+            i.save(fp, format='png')
+            fname = x.media.addFile(fp)
+            html += '<img src="%s">' % urllib.parse.quote(fname.encode("utf8"))
+    staged_images = []
+    return html
+
 def make_on_image_search(text_fn, example):
     def _find_images():
         try:
@@ -97,15 +110,13 @@ def make_on_image_search(text_fn, example):
     return _on_image_search
 
 def find_image(example):
-    query = uinput(uprompt='image', example=example)
-    if query == '':
-        return
+    query = uinput(uprompt='image', example=example, required=True)
     print("Finding images for '%s'..." % query)
     imgs = images.query_images(query)
     images.grid_print(imgs)
     res = pick_image()
     if res:
-        staged_images[query] = imgs[res -1]
+        staged_images.append(imgs[res -1])
         print("Added image %d (%s)" % (res, query))
 
 def pick_image():
