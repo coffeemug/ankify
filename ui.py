@@ -14,6 +14,7 @@ import images
 mode_name = ""
 key_bindings = {}
 staged_images = {}
+on_image_search = None
 
 # key bindings interface
 manager = KeyBindingManager.for_prompt()
@@ -29,6 +30,7 @@ def drop_key(callback):
 # uinput is kinda big
 def uinput(text=None, required=False, example=None, uprompt=None, password=False,
            allow_images=False):
+    global on_image_search
     def _text_fn():
         if text:
             print_tokens([(Token.Label, text + '\n')], style=style)
@@ -87,9 +89,11 @@ def make_on_image_search(text_fn, example):
         _i = e.cli.current_buffer.text
         if _i != '':
             return
+        drop_key(on_image_search)
         e.cli.run_in_terminal(_find_images)
         e.cli.run_in_terminal(text_fn)
-
+        add_key(Keys.ControlI, on_image_search)
+        
     return _on_image_search
 
 def find_image(example):
