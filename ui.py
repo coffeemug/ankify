@@ -29,10 +29,13 @@ def drop_key(callback):
 # uinput is kinda big
 def uinput(text=None, required=False, example=None, uprompt=None, password=False,
            allow_images=False):
+    def _text_fn():
+        if text:
+            print_tokens([(Token.Label, text + '\n')], style=style)
     if allow_images:
+        on_image_search = make_on_image_search(_text_fn, example)
         add_key(Keys.ControlI, on_image_search)
-    if text:
-        print_tokens([(Token.Label, text + '\n')], style=style)
+    _text_fn()
     promptl = [(Token.Label, uprompt)] if uprompt else []
     promptl.append((Token, '> '))
     try:
@@ -72,14 +75,26 @@ def format_bindings():
     return "/".join(keys).lower()
 
 # image search
-def on_image_search(e):
-    query = e.cli.current_buffer.text
-    e.cli.current_buffer.delete_before_cursor(len(query))
-    e.cli.run_in_terminal(lambda: find_image(query))
+def make_on_image_search(text_fn, example):
+    def _find_images():
+        try:
+            while True:
+                find_image(example)
+        except EOFError:
+            pass
 
-def find_image(query):
-    if not query or (query == ''):
-        print("Can't search for an empty image")
+    def _on_image_search(e):
+        _i = e.cli.current_buffer.text
+        if _i != '':
+            return
+        e.cli.run_in_terminal(_find_images)
+        e.cli.run_in_terminal(text_fn)
+
+    return _on_image_search
+
+def find_image(example):
+    query = uinput(uprompt='image', example=example)
+    if query == '':
         return
     print("Finding images for '%s'..." % query)
     imgs = images.query_images(query)
