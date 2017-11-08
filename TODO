@@ -1,26 +1,7 @@
 
 * TODO *
 
-- Added `is_h` to ui.py to control "concept handle" label.
-  - Really, the concept hard should contribute this. Refactor!
-  - Should save the last state in the config .
+- Should save the last state in the config.
 - Add automatic note type setup so this is actually usable for ppl
 - Package for pip3
-
-* WISHLIST *
-
-- Add mode for labeling unlabeled cards
-- Command line Google images selection/resizing for
-  mnemonics (ohhh, that would be a killer)
-
-* OLD CODE *
-
-# Word completion
-from prompt_toolkit.contrib.completers import WordCompleter
-completer=WordCompleter(complete) if complete else None # passed to prompt
-
-
-# Setting tags
-tags = uinput('Tags?', example=' '.join(x.tags.all()), complete=x.tags.all())
-n.setTagsFromStr(tags)
 
