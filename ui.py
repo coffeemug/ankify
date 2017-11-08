@@ -105,6 +105,10 @@ def summarize_images():
     print(', '.join(map(lambda x: x[0], staged_images)) + ')')
     sys.stdout.flush()
 
+def clear_staged_images():
+    global staged_images
+    staged_images = []
+
 def clean_string(s):
    s = re.sub('[^0-9a-zA-Z_]', '', s)
    s = re.sub('^[^a-zA-Z_]+', '', s)

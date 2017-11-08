@@ -19,8 +19,10 @@ def main():
             if yes_no_p('Save card?'):
                 card.save(x)
             else:
+                clear_staged_images()
                 print_subdued('Card dropped!', nl=2)
         except EOFError:
+            clear_staged_images()
             print()
         except KeyboardInterrupt:
             x.close()
