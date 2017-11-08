@@ -23,19 +23,25 @@ class Quote:
         if self.extra:
             print_hr()
             print(self.extra)
+        summarize_images()
         print()
 
     def save(self, x):
-        if self.extra:
-            m = x.models.byName('Cloze+details')
-        else:
-            m = x.models.byName('Cloze')
+        m = x.models.byName('Cloze+details')
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
         i = 0
         n['Text'] = self._to_anki()
+        
+        combined_details = ''
+        html = ui.images_save_htmlify(x)
+        if html:
+            combined_details += html
         if self.extra:
-            n['Extra'] = self.extra
+            combined_details += self.extra
+        if combined_details != '':
+            n['Extra'] = combined_details
+            
         x.addNote(n)
         x.save()
         print_loud('Card saved!', nl=2)

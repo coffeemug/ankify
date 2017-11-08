@@ -21,19 +21,25 @@ class Jeopardy:
         if self.details:
             print_hr()
             print(self.details)
+        summarize_images()
         print()
 
     def save(self, x):
-        if self.details:
-            m = x.models.byName('Basic+details')
-        else:
-            m = x.models.byName('Basic')
+        m = x.models.byName('Basic+details')
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
         n['Front'] = self.desc
         n['Back'] = self.fact
+        
+        combined_details = ''
+        html = ui.images_save_htmlify(x)
+        if html:
+            combined_details += html
         if self.details:
-            n['Details'] = self.details
+            combined_details += self.details
+        if combined_details != '':
+            n['Details'] = combined_details
+            
         x.addNote(n)
         x.save()
         print_loud('Card saved!', nl=2)

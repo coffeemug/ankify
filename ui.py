@@ -11,6 +11,7 @@ from getch import getch
 import tempfile
 import urllib
 import images
+import re
 
 # what mode are we in (for the toolbar)
 mode_name = ""
@@ -80,15 +81,34 @@ def format_bindings():
     return "/".join(keys).lower()
 
 # image search
-def save_staged_images_and_htmlify(x):
+def images_save_htmlify(x):
+    global staged_images
+    if len(staged_images) == 0:
+        return None
     html = ''
-    for i in staged_images:
-        with tempfile.TemporaryFile() as fp:
+    for q, i in staged_images:
+        with tempfile.NamedTemporaryFile(prefix=clean_string(q)+'-',
+                                         suffix='.png') as fp:
             i.save(fp, format='png')
-            fname = x.media.addFile(fp)
+            fname = x.media.addFile(fp.name)
             html += '<img src="%s">' % urllib.parse.quote(fname.encode("utf8"))
+    html += '<br />'
     staged_images = []
     return html
+
+def summarize_images():
+    nimages = len(staged_images)
+    if nimages == 0:
+        return
+    print_hr()
+    sys.stdout.write('+%d images (' % nimages)
+    print(', '.join(map(lambda x: x[0], staged_images)) + ')')
+    sys.stdout.flush()
+
+def clean_string(s):
+   s = re.sub('[^0-9a-zA-Z_]', '', s)
+   s = re.sub('^[^a-zA-Z_]+', '', s)
+   return s
 
 def make_on_image_search(text_fn, example):
     def _find_images():
@@ -118,7 +138,7 @@ def find_image(example):
     images.grid_print(imgs)
     res = pick_image()
     if res:
-        staged_images.append(imgs[res -1])
+        staged_images.append((query, imgs[res -1]))
         print("Added image %d (%s)" % (res, query))
 
 def pick_image():

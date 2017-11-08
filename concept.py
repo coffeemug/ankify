@@ -42,19 +42,25 @@ class Concept:
         if self.details:
             print_hr()
             print(self.details)
+        summarize_images()
         print()
 
     def save(self, x):
-        if self.details:
-            m = x.models.byName('Basic/reversed+details')
-        else:
-            m = x.models.byName('Basic (and reversed card)')
+        m = x.models.byName('Basic/reversed+details')
         x.decks.current()['mid'] = m['id']
         n = x.newNote()
         n['Front'] = self.concept
         n['Back'] = self.desc
+
+        combined_details = ''
+        html = ui.images_save_htmlify(x)
+        if html:
+            combined_details += html
         if self.details:
-            n['Details'] = self.details
+            combined_details += self.details
+        if combined_details != '':
+            n['Details'] = combined_details
+            
         x.addNote(n)
         x.save()
         print_loud('Card saved!', nl=2)
