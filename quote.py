@@ -34,7 +34,7 @@ class Quote:
         n['Text'] = self._to_anki()
         
         combined_details = ''
-        html = ui.images_save_htmlify(x)
+        html = images_save_htmlify(x)
         if html:
             combined_details += html
         if self.extra:

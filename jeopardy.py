@@ -32,7 +32,7 @@ class Jeopardy:
         n['Back'] = self.fact
         
         combined_details = ''
-        html = ui.images_save_htmlify(x)
+        html = images_save_htmlify(x)
         if html:
             combined_details += html
         if self.details:
