@@ -1,7 +1,12 @@
 
 * TODO *
 
-- Should save the last state in the config.
+- "[concept handle]" should show up on both sides
+- for concepts, randomize sides for easier learning
+- add support for "[word]" concept mode
+
+* Wishlist *
+
 - Add automatic note type setup so this is actually usable for ppl
 - Package for pip3
 
