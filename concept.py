@@ -4,17 +4,29 @@ import random
 from ui import *
 from prompt_toolkit.keys import Keys
 
-is_concept_handle = True
+label_chain = ['c', 'w', None]
+
+def label():
+    return label_chain[0]
+
 def toggle_concept_handle(e):
-    global is_concept_handle
-    is_concept_handle = not is_concept_handle
+    global label_chain
+    label_chain = label_chain[1:] + label_chain[:1]
     ui.mode_name = fmt_card_mode()
 
 def fmt_card_mode():
-    if is_concept_handle:
-        return '<h>'
-    else:
-        return '<->'
+    return {
+        'c' : '<c>',
+        'w' : '<w>',
+        None : '<->',
+    }[label()]
+
+def fmt_label(txt):
+    return {
+        'c' : '<b>[concept handle]</b> ',
+        'w' : '<b>[word]</b> ',
+        None : '',
+    }[label()] + txt
     
 class Concept:
     def __init__(self):
@@ -37,10 +49,9 @@ class Concept:
         # easier)
         self.concept, self.desc = random.sample([self.concept, self.desc], 2)
 
-        # Add concept handle
-        if is_concept_handle:
-            self.concept = "<b>[concept handle]</b> " + self.concept
-            self.desc = "<b>[concept handle]</b> " + self.desc
+        # Add the label
+        self.concept = fmt_label(self.concept)
+        self.desc = fmt_label(self.desc)
 
     def output(self):
         print_accent('\n*** Card ***')
