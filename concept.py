@@ -1,5 +1,6 @@
 
 import ui
+import random
 from ui import *
 from prompt_toolkit.keys import Keys
 
@@ -31,7 +32,14 @@ class Concept:
                             example='A tax on negative externalities')
         self.details = uinput(text='Pronunciation/mnemonics?', example='pig-oo-vian',
                               allow_images=True)
+        # randomize order (since the concept headline and definition
+        # are interchangable/makes two cards, shuffling makes learning
+        # easier)
+        self.concept, self.desc = random.sample([self.concept, self.desc], 2)
+
+        # Add concept handle
         if is_concept_handle:
+            self.concept = "<b>[concept handle]</b> " + self.concept
             self.desc = "<b>[concept handle]</b> " + self.desc
 
     def output(self):
