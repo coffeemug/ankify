@@ -1,7 +1,4 @@
 
-# NOTE: this isn't hooked up to the main app yet. It will be soon and
-# it will be glorious for picking mnemonics.
-
 import io
 import base64
 import sys

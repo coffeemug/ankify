@@ -114,23 +114,31 @@ def clean_string(s):
    s = re.sub('^[^a-zA-Z_]+', '', s)
    return s
 
+class ImageSearchTerm(Exception):
+    pass
+
 def make_on_image_search(text_fn, example):
     def _find_images():
         try:
             while True:
                 find_image(example)
-        except EOFError:
+        except ImageSearchTerm:
             pass
+
+    def _on_end_image_search(e):
+        raise ImageSearchTerm()
 
     def _on_image_search(e):
         _i = e.cli.current_buffer.text
         if _i != '':
             return
         drop_key(on_image_search)
+        add_key(Keys.ControlI, _on_end_image_search)
         try:
             e.cli.run_in_terminal(_find_images)
             e.cli.run_in_terminal(text_fn)
         finally:
+            drop_key(_on_end_image_search)
             add_key(Keys.ControlI, on_image_search)
         
     return _on_image_search
