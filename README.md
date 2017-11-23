@@ -10,6 +10,13 @@ An efficient command line/terminal interface to add cards to Anki
 - `Ctrl-u` - sync with the server
 - `Ctrl-c` - quit
 
+When in `<->` mode:
+- `Ctrl-h` to pick the handle type (concept, word, or none). Adds the appropriate label to the field (e.g. `[concept handle]` or `[word]`)
+
+Wehn on `Pronunciation/mnemonics` steps:
+- `Ctrl-i` to enter image search mode. This mode integrates with google images to quickly find images for mnemonics to add them to the card. Requires iTerm (for images support in the terminal).
+- When done with image mode, hit `Ctrl-i` again.
+
 # Caveat
 
 Currently the program depends on note types that don't exist in Anki
