@@ -4,7 +4,7 @@ import random
 from ui import *
 from prompt_toolkit.keys import Keys
 
-label_chain = ['c', 'w', 'p', None]
+label_chain = ['c', 'w', 'b', None]
 
 def label():
     return label_chain[0]
@@ -18,15 +18,15 @@ def fmt_card_mode():
     return {
         'c' : '<c>',
         'w' : '<w>',
-        'p' : '<p>',
+        'b' : '<b>',
         None : '<->',
     }[label()]
 
 def fmt_label(txt):
     return {
-        'c' : '<b>[concept handle]</b> ',
+        'c' : '<b>[concept]</b> ',
         'w' : '<b>[word]</b> ',
-        'p' : '<b>[person]</b> ',
+        'b' : '<b>[bio]</b> ',
         None : '',
     }[label()] + txt
     
